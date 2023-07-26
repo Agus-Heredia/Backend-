@@ -24,6 +24,7 @@ class ProductManager {
             stock,
 
         }
+        this.products.push(newProduct);
     }
 
     getProducts(){
@@ -43,9 +44,12 @@ const productManager = new ProductManager()
 
 
 //Añadimos productos a nuestro array Products[]
-productManager.addProduct('Remera', 'Remera negra', '199', 'www.imgExample.com', '#A001', '8')
-productManager.addProduct('Pantalón', 'Short liso', '49', 'www.imgExample.com', '#A002', '4')
-productManager.addProduct('Medias', 'Medias cortas blancas', '19', 'www.imgExample.com', '#A003', '12')
+productManager.addProduct('Remera', 'Remera negra', 199, 'www.imgExample.com', '#A001', 8)
+productManager.addProduct('Pantalón', 'Short liso', 49, 'www.imgExample.com', '#A002', 4)
+productManager.addProduct('Medias', 'Medias cortas blancas', 19, 'www.imgExample.com', '#A003', 12)
 
 //Imprimimos por consola nuestro array con los productos agregados
 console.log(productManager.getProducts());
+
+//Tambien podemos obtener un producto buscándolo por su ID correspondiente
+console.log('======= Buscando producto con el ID solicitado... ======', productManager.getProductById(1));
