@@ -1,5 +1,5 @@
 //Hacemos un require al manejador de archivos nativo de NodeJs nombrado 'File System' 
-const fs = require('fs')
+import fs from 'fs'
 
 //Creamos la clase que se encargara de manejar los productos que vayamos agregando, junto con sus archivos
 class ProductManager {
@@ -22,7 +22,7 @@ class ProductManager {
   }
 
 
-  async addProduct(title, description, price, thumbnail, code, stock) {
+  async addProduct(title, category, description, price, thumbnail, code, stock) {
     try {
       const productInfo = await this.getProducts();
       const repeatedCode = productInfo.find((item) => item.code === code);
@@ -36,6 +36,7 @@ class ProductManager {
         const newProduct = {
           id: newId,
           title,
+          category,
           description,
           price,
           thumbnail,
@@ -67,6 +68,17 @@ class ProductManager {
       console.log(error);
     }
   }
+
+    async deleteAllProducts() {
+    try {
+        if(fs.existsSync(this.path)) {
+           fs.promises.unlink(this.path)
+        }
+    } catch(error) {
+        console.log(error);  
+      }
+    }
+
 
   async updateProduct(prodId, updatingProd) {
     try {
@@ -113,6 +125,8 @@ class ProductManager {
   }
 }
 
+export default ProductManager
+
 //Instanciamos nuestra clase ProductManager
 const productManager = new ProductManager();
 
@@ -121,17 +135,17 @@ const productManager = new ProductManager();
 const handleManager = async () => {
 
   // Agregamos productos
-  await productManager.addProduct('Remera', 'Remera negra', 199, 'www.imgExample.com', '#A001', 8);
-  await productManager.addProduct('Pantalón', 'Short liso', 49, 'www.imgExample.com', '#A002', 4);
-  await productManager.addProduct('Medias', 'Medias cortas blancas', 19, 'www.imgExample.com', '#A003', 12);
+  await productManager.addProduct('Remera', 'Remeras', 'Remera negra', 199, 'imgExample.jpg', '#A001', 8);
+  await productManager.addProduct('Pantalón', 'Pantalones', 'Short liso', 49, 'imgExample.jpg', '#A002', 4);
+  await productManager.addProduct('Medias', 'Medias', 'Medias cortas blancas', 19, 'imgExample.jpg', '#A003', 12);
   
   const get = await productManager.getProducts();
   console.log("--- Llamado al array ---", get);
 
 
   // Buscamos producto por su ID
-  const getNo2 = await productManager.getProductById(2);
-  console.log("Producto buscado por ID:", getNo2);
+  // const getNo2 = await productManager.getProductById(2);
+  // console.log("Producto buscado por ID:", getNo2);
 
 
   // OPCIONAL: Con esta función podemos eliminar un producto en específico por su ID
