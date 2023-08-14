@@ -11,10 +11,12 @@ app.get ('/', (req, res) => {
     res.send('Welcome to the Express server of Agus! :)')
 })
 
-app.get('/products', async (req, res) => {
+app.get('/api/products', async (req, res) => {
     try {
+        const { limit } = req.query
         const prods = await productManager.getProducts()
-        res.status(200).json(prods)
+        const limitedProducts = prods.slice(0, limit)
+        res.status(200).json(limitedProducts)
     } catch {
         res.status(400).send({ message: error.message})
     }
