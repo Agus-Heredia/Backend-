@@ -46,6 +46,21 @@ cartsRouter.get('/:cartId', async (req, res) => {
     }
   })
 
+  cartsRouter.post('/:cartId/product/:prodId', async (req, res) => {
+    try {
+      const cartId = req.params.cartId;
+      const prodId = req.params.prodId;
+      const productAdd = await cartManager.addProductToCart(cartId, prodId)
+      if(productAdd){
+        res.status(200).send('producto agregado al carrito')
+      }else{
+        res.status(404).send('producto no encontrado')
+      }
+      } catch (error) {
+      res.status(500).send('Server error');
+    }
+  })
+
 
   cartsRouter.delete('/', async(req, res) =>{
     try {
@@ -56,6 +71,20 @@ cartsRouter.get('/:cartId', async (req, res) => {
     }
 })
 
+cartsRouter.delete('/:cartId', async(req, res) =>{
+  try {
+      const { cartId } = req.params;
+      const carts = await cartManager.getCarts();  
+      if(carts.length > 0) {
+          await cartManager.deleteCartById(Number(cartId));
+          res.send(`El carrito con el id: ${cartId} ha sido eliminado corectamente!`);
+      } else {
+          res.send(`No se ha encontrado el carrito`)
+      }
+  } catch (error) {
+      res.status(404).json({message: error.message});
+  }
+})
 
 
 

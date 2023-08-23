@@ -4,7 +4,7 @@ import fs from 'fs'
 //Creamos la clase que se encargara de manejar los productos que vayamos agregando, junto con sus archivos
 class ProductManager {
   constructor() {
-    this.path = "././products.txt";
+    this.path = "././products.json";
   }
 
   async #getNewId(){
@@ -138,43 +138,3 @@ class ProductManager {
 }
 
 export default ProductManager
-
-// //Instanciamos nuestra clase ProductManager
-// const productManager = new ProductManager();
-
-
-// //Definimos la función asíncrona para manipular los productos
-// const handleManager = async () => {
-
-//   // Agregamos productos
-//   await productManager.addProduct('Remera', 'Remeras', 'Remera negra', 199, 'imgExample.jpg', '#A001', 8);
-//   await productManager.addProduct('Pantalón', 'Pantalones', 'Short liso', 49, 'imgExample.jpg', '#A002', 4);
-//   await productManager.addProduct('Medias', 'Medias', 'Medias cortas blancas', 19, 'imgExample.jpg', '#A003', 12);
-  
-//   const get = await productManager.getProducts();
-//   console.log("--- Llamado al array ---", get);
-
-
-//   // Buscamos producto por su ID
-//   // const getNo2 = await productManager.getProductById(2);
-//   // console.log("Producto buscado por ID:", getNo2);
-
-
-//   // OPCIONAL: Con esta función podemos eliminar un producto en específico por su ID
-//   // await productManager.deleteProduct(1);
-//   // const getNo4 = await productManager.getProducts();
-//   // console.log("--- Tercer llamado al array ---", getNo4);
-
-
-
-//   // OPCIONAL: Con esta función actualizamos las caracteristicas de un producto mediante su ID
-//   // await productManager.updateProduct(1, {
-//   //   price: this.price + 300,
-//   //   stock: this.stock + 15,
-//   // });
-
-
-
-// };
-
-// handleManager();

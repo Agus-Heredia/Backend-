@@ -3,7 +3,7 @@ import fs from 'fs';
 
 export default class cartManager {
     constructor() {
-        this.path = "././carts.txt";
+        this.path = "././carts.json";
     }
 
 
@@ -60,6 +60,46 @@ export default class cartManager {
     }
 
 
+    async addProductToCart(prodId, cartId) {
+        try {
+            const cart = await this.getCartById(cartId);
+            if (cart) {
+                const productIndex = cart.products.findIndex(prod => prod.product === prodId);
+                if (productIndex !== -1) {
+                    cart.products[productIndex].quantity += 1;
+                } else {
+                    cart.products.push(
+                        { 
+                        id: product.prodId,
+                        quantity: 1
+                    });
+                }
+                const cartsFile = await this.getCarts();
+                const index = cartsFile.findIndex(crt => crt.cartId === cartId);
+                cartsFile[index] = cart;
+                await fs.promises.writeFile(this.pathCart, JSON.stringify(cartsFile));
+                return cart;
+            }
+            throw new Error(`Cart with id ${cartId} not found`);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async deleteCartById(cartId) {
+        try {
+            const cartsFile = await this.getCarts();
+            if (cartsFile.length > 0) {
+                const newArray = cartsFile.filter(c => c.cartId !== cartId);
+                await fs.promises.writeFile(this.pathCart, JSON.stringify(newArray));
+            } else {
+                throw new Error(`Cart with id: ${cartId} not found`);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async deleteCarts() {
         try {
             if(fs.existsSync(this.path)) {
@@ -69,7 +109,6 @@ export default class cartManager {
             console.log(error);  
           }
         }
-
 
 
 }
