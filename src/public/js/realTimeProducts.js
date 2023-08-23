@@ -29,3 +29,4 @@ socket.on('getProducts', (array) => {
     const products = document.getElementById('formProducts');
     products.innerHTML = infoProducts;
 })
+

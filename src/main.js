@@ -9,8 +9,7 @@ import { Server } from 'socket.io'
 const PORT = 4000
 const app = express()
 
-//App listen
-
+//Server
  const server = app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}!`);
 })
@@ -23,11 +22,11 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.engine('handlebars', engine())
 app.set('view engine', 'handlebars')
-app.set('views', path.resolve(__dirname, './views'))
+app.set('views', path.resolve( __dirname, './views'))
 
 //Conectamos Socket.io
 io.on("connection", async (socket) => {
-    console.log('Conecction with Socket.io succesfully!');
+    console.log("Conecction with Socket.io succesfully!");
 
     socket.on('msg', info => {
         console.log(info);
@@ -35,8 +34,10 @@ io.on("connection", async (socket) => {
 
     const products = await productManager.getProducts()
     // console.log(products)
+
     socket.on('newProduct', async(prod) => {
-        await productManager.createProduct(prod.name, {...prod})
+        await productManager.addProduct(prod.name, {...prod})
+        console.log(prod);
     })
     socket.emit('getProducts', products)
 })
@@ -46,25 +47,27 @@ io.on("connection", async (socket) => {
 //Routes
 app.use('/static', express.static(path.join(__dirname, './public')))
 app.get ('/', (req, res) => {
-    res.send('Welcome to the Express server of Agus! :)')
+    res.send('<h3>Welcome to the Express server of Agus! :)</h3>')
 })
 app.use('/api/products', prodsRouter)
 app.use('/api/carts', cartsRouter)
 
-//Ruta para error 404
-app.get('*', (req, res) => {
-    res.send('Error 404: Page not found')
-})
 
 //Hbs
 app.get('/static', (req,res) => {
-    res.render('realTimeProducts', {
-        rutaCSS: realTimeProducts,
-        rutaJS: realTimeProducts
+
+    res.render("realTimeProducts", {
+        rutaCSS: "realTimeProducts",
+        rutaJS: "realTimeProducts"
     })
+
 })
 
 
+// Ruta para error 404
+app.get('*', (req, res) => {
+    res.send('<h2>Error 404: Page not found</h2>')
+})
 
 
 
