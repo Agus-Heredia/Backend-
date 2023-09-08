@@ -1,6 +1,7 @@
 import express, { urlencoded } from 'express'
 import prodsRouter from './routes/products.routes.js'
 import cartsRouter from './routes/cart.routes.js'
+import viewsRouter from './routes/views.routes.js'
 import { __dirname } from './path.js'
 import path from 'path'
 import { engine } from 'express-handlebars'
@@ -25,22 +26,38 @@ app.set('view engine', 'handlebars')
 app.set('views', path.resolve( __dirname, './views'))
 
 //Conectamos Socket.io
-io.on("connection", async (socket) => {
-    console.log("Conecction with Socket.io succesfully!");
+// io.on("connection", async (socket) => {
 
-    socket.on('msg', info => {
-        console.log(info);
+//     socket.on('msg', info => {
+//         console.log(info);
+//     })
+
+//     const products = await productManager.getProducts()
+//     // console.log(products)
+
+//     socket.on('newProduct', async(prod) => {
+//         await productManager.addProduct(prod.name, {...prod})
+//         console.log(prod);
+//     })
+//     socket.emit('getProducts', products)
+// })
+    import ProductManager from './manager/ProductManager.js'
+    const productManager = new ProductManager()
+
+    io.on('connection', async (socket) => {
+        console.log('✓ User connected successfully!', `-- Your ID is: (${socket.id}) --`);
+        socket.on('disconnect', () => {
+            console.log('✗ User disconnected');
+        })
+        // socket.emit('msgFromBack', 'Welcome to the Backend server!');
+
+        const products = await productManager.getProducts()
+        // console.log(products)
+        socket.on('newProduct', async(prod) => {
+            await productManager.addProduct(prod.name, {...prod})
+        })
+        socket.emit('getProducts', products)
     })
-
-    const products = await productManager.getProducts()
-    // console.log(products)
-
-    socket.on('newProduct', async(prod) => {
-        await productManager.addProduct(prod.name, {...prod})
-        console.log(prod);
-    })
-    socket.emit('getProducts', products)
-})
 
 
 
@@ -51,14 +68,14 @@ app.get ('/', (req, res) => {
 })
 app.use('/api/products', prodsRouter)
 app.use('/api/carts', cartsRouter)
+app.use('/', viewsRouter)
 
 
-//Hbs
+//Handlebars
 app.get('/static', (req,res) => {
 
-    res.render("realTimeProducts", {
-        rutaCSS: "realTimeProducts",
-        rutaJS: "realTimeProducts"
+    res.render("home", {      
+
     })
 
 })
