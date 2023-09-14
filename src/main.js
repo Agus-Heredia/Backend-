@@ -6,6 +6,7 @@ import { __dirname } from './path.js'
 import path from 'path'
 import { engine } from 'express-handlebars'
 import { Server } from 'socket.io'
+import mongoose from 'mongoose'
 
 const PORT = 4000
 const app = express()
@@ -70,6 +71,9 @@ app.use('/api/products', prodsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/', viewsRouter)
 
+mongoose.connect('mongodb+srv://Agus:Futbolagus2@cluster0.4sln16m.mongodb.net/?retryWrites=true&w=majority')
+    .then(() => console.log('DB conected successfully'))
+    .catch((error) => console.log('Error on connection with MongoDB Atlas: ', error))
 
 //Handlebars
 app.get('/static', (req,res) => {
