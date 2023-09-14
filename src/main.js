@@ -1,4 +1,6 @@
-import express, { urlencoded } from 'express'
+import 'dotenv/config'
+import express from 'express'
+import { urlencoded } from 'express'
 import prodsRouter from './routes/products.routes.js'
 import cartsRouter from './routes/cart.routes.js'
 import viewsRouter from './routes/views.routes.js'
@@ -26,44 +28,26 @@ app.engine('handlebars', engine())
 app.set('view engine', 'handlebars')
 app.set('views', path.resolve( __dirname, './views'))
 
-//Conectamos Socket.io
-// io.on("connection", async (socket) => {
+import ProductManager from './manager/ProductManager.js'   
+const productManager = new ProductManager()
 
-//     socket.on('msg', info => {
-//         console.log(info);
-//     })
-
-//     const products = await productManager.getProducts()
-//     // console.log(products)
-
-//     socket.on('newProduct', async(prod) => {
-//         await productManager.addProduct(prod.name, {...prod})
-//         console.log(prod);
-//     })
-//     socket.emit('getProducts', products)
-// })
-    import ProductManager from './manager/ProductManager.js'
-    const productManager = new ProductManager()
-
-    io.on('connection', async (socket) => {
+io.on('connection', async (socket) => {
         console.log('✓ User connected successfully!', `-- Your ID is: (${socket.id}) --`);
         socket.on('disconnect', () => {
             console.log('✗ User disconnected');
         })
-        // socket.emit('msgFromBack', 'Welcome to the Backend server!');
 
         const products = await productManager.getProducts()
-        // console.log(products)
         socket.on('newProduct', async(prod) => {
             await productManager.addProduct(prod.name, {...prod})
         })
         socket.emit('getProducts', products)
-    })
+})
 
 
 
 //Routes
-app.use('/static', express.static(path.join(__dirname, './public')))
+app.use('/static', express.static(path.join('src','public')))
 app.get ('/', (req, res) => {
     res.send('<h3>Welcome to the Express server of Agus! :)</h3>')
 })
@@ -71,15 +55,26 @@ app.use('/api/products', prodsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/', viewsRouter)
 
-mongoose.connect('mongodb+srv://Agus:Futbolagus2@cluster0.4sln16m.mongodb.net/?retryWrites=true&w=majority')
+
+
+//MongoDB
+mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log('DB conected successfully'))
     .catch((error) => console.log('Error on connection with MongoDB Atlas: ', error))
+
+
 
 //Handlebars
 app.get('/static', (req,res) => {
 
-    res.render("home", {      
+    // res.render("realTimeProducts", {
+    //     rutaJS: "realTimeProducts",
+    //     rutaCSS: "realTimeProducts"
+    // })
 
+    res.render('chat', {
+        rutaJS: 'chat',        
+        rutaCSS: 'styles'
     })
 
 })

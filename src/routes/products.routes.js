@@ -95,7 +95,7 @@ prodsRouter.delete ('/:id', async(req, res) => {
 prodsRouter.delete('/', async(req, res) =>{
     try {
         await productsModel.deleteMany()
-        res.send('Todos los productos han sido eliminados correctamente!')
+        res.send('Products deleted successfully!')
     } catch (error) {
         res.status(404).send({Error: `Cant delete products.`, error})
     }
