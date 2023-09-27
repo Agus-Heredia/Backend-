@@ -11,6 +11,8 @@ import { Server } from 'socket.io'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
+import MongoStore from 'connect-mongo'
+import sessionRouter from './routes/sessions.routes.js'
 
 const PORT = 4000
 const app = express()
@@ -32,6 +34,9 @@ app.set('view engine', 'handlebars')
 app.set('views', path.resolve( __dirname, './views'))
 
 import ProductManager from './manager/ProductManager.js'   
+import cartModel from './models/carts.models.js'
+import productsModel from './models/products.models.js'
+import MongoStore from 'connect-mongo'
 const productManager = new ProductManager()
 
 io.on('connection', async (socket) => {
@@ -40,9 +45,9 @@ io.on('connection', async (socket) => {
             console.log('✗ User disconnected');
         })
 
-        const products = await productManager.getProducts()
+        const products = await productsModel.find()
         socket.on('newProduct', async(prod) => {
-            await productManager.addProduct(prod.name, {...prod})
+            await productsModel.create(prod.name, {...prod})
         })
         socket.emit('getProducts', products)
 })
@@ -57,6 +62,7 @@ app.get ('/', (req, res) => {
 app.use('/api/products', prodsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/', viewsRouter)
+app.use('/api/sessions', sessionRouter)
 
 
 //Cookies
@@ -74,6 +80,11 @@ app.get('/getCookie', (req, res) => {
 
 //Session config
 app.use(session({
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+        mongoOptions: {useNewUrlParser: true, useUnifyTopology: true},
+        ttl: 90 //Segundos
+    }),
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
@@ -90,7 +101,9 @@ function auth(req, res, next) {
 
 //MongoDB
 mongoose.connect(process.env.MONGO_URL)
-    .then(() => console.log('DB conected successfully :)'))
+    .then(() =>
+    console.log('DB conected successfully :)')
+    )
     .catch((error) => console.log('Error on connection with MongoDB Atlas: ', error))
 
 

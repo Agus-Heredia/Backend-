@@ -25,7 +25,7 @@ socket.on('getProducts', (array) => {
     array.forEach( (p) => {
         infoProducts += `${p.title} - ${p.price} <br>`;
     });
-    // console.log(infoProducts);
+    console.log(infoProducts);
     const products = document.getElementById('formProducts');
     products.innerHTML = infoProducts;
 })

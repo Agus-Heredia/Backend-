@@ -3,9 +3,17 @@ import cartModel from '../models/carts.models.js'
 
 const cartsRouter = Router()
 
-cartsRouter.get('/', async(req, res) => {
-  res.send('<h1>Carts</h1>')
+cartsRouter.get ('/', async(req, res) => {
+  const { limit } = req.query
+  try {
+      const prods = await cartModel.find().limit(limit)
+      res.status(200).send(prods)
+
+  } catch(error) {
+      res.status(400).send({Error: `Products cannot be found. ${error.message}`})
+      }
 })
+
 
 cartsRouter.post('/:cid/products/:pid', async (req, res) => {
   const { cid, pid } = req.params

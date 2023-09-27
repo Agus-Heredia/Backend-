@@ -1,3 +1,59 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+section {
+    display: flex;
+    justify-content: space-around;
+}
+
 body {
     background-color: aquamarine;
+}
+
+h1 {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+form {
+    border: #333 solid 1px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    width: 500px;
+    padding: 20px;
+    margin-left: 10px;
+    background-color: #fff;
+    
+}
+
+label,
+input {
+    display: block;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 5px;
+}
+
+#btnDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+button {
+    width: 200px;
+    padding: 5px;
+    background-color: aqua;
+    color: #000;
+    border: none;
+    border-radius: 20px;
+    
+
 }
