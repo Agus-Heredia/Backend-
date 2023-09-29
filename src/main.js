@@ -11,6 +11,7 @@ import { Server } from 'socket.io'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
+import productsModel from './models/products.models.js'
 import MongoStore from 'connect-mongo'
 import sessionRouter from './routes/sessions.routes.js'
 
@@ -33,11 +34,6 @@ app.engine('handlebars', engine())
 app.set('view engine', 'handlebars')
 app.set('views', path.resolve( __dirname, './views'))
 
-import ProductManager from './manager/ProductManager.js'   
-import cartModel from './models/carts.models.js'
-import productsModel from './models/products.models.js'
-import MongoStore from 'connect-mongo'
-const productManager = new ProductManager()
 
 io.on('connection', async (socket) => {
         console.log('✓ User connected successfully!', `-- Your ID is: (${socket.id}) --`);
@@ -82,7 +78,7 @@ app.get('/getCookie', (req, res) => {
 app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URL,
-        mongoOptions: {useNewUrlParser: true, useUnifyTopology: true},
+        mongoOptions: {useNewUrlParser: true},
         ttl: 90 //Segundos
     }),
     secret: process.env.SESSION_SECRET,
@@ -121,47 +117,6 @@ app.get('/static', (req,res) => {
     //     rutaCSS: 'styles'
     // })
 
-})
-
-
-//Sessions
-
-app.get('/session', (req,res) => {
-    if(req.session.counter) {
-        req.session.counter++
-        res.send(`Hola, ya vas ingresando ${req.session.counter} veces a mi página, gracias!`)
-    } else {
-        req.session.counter = 1
-        res.send('Hola, bienvenido!')
-    }
-})
-
-app.get('/admin', auth, (req, res) => {
-    res.send("Bienvenido admin")
-})
-
-
-
-app.get('/login', (req,res) => {
-    const {email, password} = req.body
-
-    req.session.email = email
-    req.session.password = password
-
-    return res.render('Usuario logueado correctamente')
-})
-
-
-
-app.get('/logout', (req,res) => {
-    req.session.destroy((error) => {
-        if(error) {
-            res.send(error)
-        } else { 
-            res.send('Usuario deslogueado')
-        }
-
-    })
 })
 
 
