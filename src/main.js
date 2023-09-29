@@ -13,6 +13,7 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import productsModel from './models/products.models.js'
 import MongoStore from 'connect-mongo'
+import userRouter from './routes/users.routes.js'
 import sessionRouter from './routes/sessions.routes.js'
 
 const PORT = 4000
@@ -50,6 +51,20 @@ io.on('connection', async (socket) => {
 
 
 
+//Session config
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+        mongoOptions: {useNewUrlParser: true},
+        ttl: 90 //Segundos
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+}))
+
+
+
 //Routes
 app.use('/static', express.static(path.join('src','public')))
 app.get ('/', (req, res) => {
@@ -58,8 +73,8 @@ app.get ('/', (req, res) => {
 app.use('/api/products', prodsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/', viewsRouter)
+app.use('/api/users', userRouter)
 app.use('/api/sessions', sessionRouter)
-
 
 //Cookies
 app.get('/setCookie', (req, res) => {
@@ -70,30 +85,6 @@ app.get('/getCookie', (req, res) => {
     res.send(req.signedCookies) //Consultar solo las cookies firmadas
     //res.send(req.cookies) Consultar TODAS las cookies
 })
-
-
-
-
-//Session config
-app.use(session({
-    store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URL,
-        mongoOptions: {useNewUrlParser: true},
-        ttl: 90 //Segundos
-    }),
-    secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,
-}))
-
-function auth(req, res, next) {
-    console.log(req.session.email)
-    if (req.session.email === 'adminCoder@coder.com' && req.session.password === 'adminCod3r123') {
-        return next() //Puede ingresar a la seccion para admins
-    } else {
-        res.send('No sos admin')
-    }
-}
 
 //MongoDB
 mongoose.connect(process.env.MONGO_URL)

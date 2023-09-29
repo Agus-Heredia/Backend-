@@ -14,8 +14,8 @@ sessionRouter.post('/login', async(req,res) => {
         if(user){
             if (user.password == password) {
                 req.session.login = true
-                res.status(200).send({message: 'Login successfuly'})
-                // res.redirect ///// A COMPLETAR PARA MANEJO DE ROLES /////
+                res.status(200).send({ resultado: 'Login successfully', message: user })
+                // res.status(200).redirect('/realtimeproducts') // Dejo comentado hasta lograr que funcione
             } else {
                 res.status(401).send({result: 'Unahutorized', message: user})
             }
@@ -33,5 +33,6 @@ sessionRouter.get('/logout', (req, res) => {
     }
     res.status(200).send({ resultado: 'Login eliminado' })
 })
+
 
 export default sessionRouter
