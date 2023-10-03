@@ -23,10 +23,23 @@ socket.on('getProducts', (array) => {
     let infoProducts = '';
 
     array.forEach( (p) => {
-        infoProducts += `${p.title} - ${p.price} <br>`;
+        infoProducts += `
+            <div class="prodsDiv">
+                <ul class="prodsList">
+                    <li><b>Nombre:</b>  ${p.title}</li> 
+                    <li><b>Descripción:</b> ${p.description}</li>
+                    <li><b>Precio:</b> $${p.price}</li>
+                    <li><b>Stock:</b> ${p.stock}</li>
+                    <li><b>Categoría:</b> ${p.category}</li>
+                    <li><b>Código:</b> ${p.code}</li>
+                </ul>
+            </div>
+
+         `;
     });
     console.log(infoProducts);
     const products = document.getElementById('formProducts');
     products.innerHTML = infoProducts;
 })
 
+// ${p.description} - ${p.price} - ${p.stock} - ${p.category} - ${p.code}

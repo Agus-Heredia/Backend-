@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { userModel } from "../models/users.model.js";
+import { validatePassword } from "../utils/bcrypt.js";
 
 const sessionRouter = new Router()
 
@@ -12,7 +13,7 @@ sessionRouter.post('/login', async(req,res) => {
         const user = await userModel.findOne({email: email})
 
         if(user){
-            if (user.password == password) {
+            if (validatePassword(password, user.password)) {
                 req.session.login = true
                 res.status(200).send({ resultado: 'Login successfully', message: user })
                 // res.status(200).redirect('/realtimeproducts') // Dejo comentado hasta lograr que funcione
