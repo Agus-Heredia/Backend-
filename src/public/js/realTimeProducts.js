@@ -41,5 +41,3 @@ socket.on('getProducts', (array) => {
     const products = document.getElementById('formProducts');
     products.innerHTML = infoProducts;
 })
-
-// ${p.description} - ${p.price} - ${p.stock} - ${p.category} - ${p.code}

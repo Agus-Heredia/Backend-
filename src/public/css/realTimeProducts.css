@@ -64,7 +64,6 @@ button {
 
 .prodsDiv {
     display: flex;
-    border: 1px solid #000;
 }
 
 
@@ -75,6 +74,6 @@ button {
     border: 1px solid #000;
     border-radius: 10px;
     margin: 10px;
-    width: 800px;
+    width: 700px;
     gap: 20px;
 }

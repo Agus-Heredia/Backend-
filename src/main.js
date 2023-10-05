@@ -15,6 +15,9 @@ import productsModel from './models/products.models.js'
 import MongoStore from 'connect-mongo'
 import userRouter from './routes/users.routes.js'
 import sessionRouter from './routes/sessions.routes.js'
+import passport from 'passport'
+import initializePassport from './config/passport.js'
+
 
 const PORT = 4000
 const app = express()
@@ -62,7 +65,10 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
 }))
-
+//Passport config
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 
 //Routes
